@@ -18,6 +18,7 @@ const errorHandler = require('./error-handlers/500.js');
 // Routes
 const v1Routes = require('./routes/v1.js');
 const authRouter = require('./routes/routes.js');
+const v2Routes = require('./routes/v2.js');
 
 // Express
 const app = express();
@@ -33,8 +34,8 @@ app.use(logger);
 
 // Routes
 app.use('/api/v1', v1Routes);
-//app.use('/auth/', authRouter);
-//app.use()
+app.use('/api/v2', v2Routes);
+app.use(authRouter);
 
 
 // Use error handlers

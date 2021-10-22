@@ -6,7 +6,7 @@ const foodModel = (sequelize, DataTypes) => sequelize.define('Food', {
     required: true 
   },
   calories: { 
-    type: DataTypes.NUMBER, 
+    type: DataTypes.INTEGER, 
     required: true 
   },
   type: { 
