@@ -3,9 +3,14 @@
 const express = require('express');
 const dataModules = require('../models');
 
-const router = express.Router();
+const authv2 = express.Router();
 
-router.param('model', (req, res, next) => {
+const { users } = require('../models');
+const basicAuth = require('../middleware/basic.js')
+const bearerAuth = require('../middleware/bearer.js')
+const permissions = require('../middleware/acl.js')
+
+authv2.param('model', (req, res, next) => {
   const modelName = req.params.model;
   if (dataModules[modelName]) {
     req.model = dataModules[modelName];
@@ -15,12 +20,12 @@ router.param('model', (req, res, next) => {
   }
 });
 
-router.get('/:model', handleGetAll);
-router.get('/:model/:id', handleGetOne);
-router.post('/:model', handleCreate);
-router.put('/:model/:id', handleUpdate);
-router.patch('/:model/:id', handleUpdate);
-router.delete('/:model/:id', handleDelete);
+authv2.get('/:model', handleGetAll);
+authv2.get('/:model/:id', handleGetOne);
+authv2.post('/:model', bearerAuth, permissions('create'), handleCreate);
+authv2.put('/:model/:id', bearerAuth, permissions('update'), handleUpdate);
+authv2.patch('/:model/:id', bearerAuth, permissions('update'), handlePartialUpdate);
+authv2.delete('/:model/:id', bearerAuth, permissions('delete'), handleDelete);
 
 async function handleGetAll(req, res) {
   let allRecords = await req.model.get();
@@ -46,11 +51,11 @@ async function handleUpdate(req, res) {
   res.status(200).json(updatedRecord);
 }
 
-async function handleUpdate(req, res) {
-  const id = req.params.id;
-  const obj = req.body;
-  let updatedRecord = await req.model.update(id, obj)
-  res.status(200).json(updatedRecord);
+async function handlePartialUpdate(req, res) {
+    const id = req.params.id;
+    const obj = req.body;
+    let updatedRecord = await req.model.update(id, obj)
+    res.status(200).json(updatedRecord);
 }
 
 async function handleDelete(req, res) {
@@ -60,4 +65,4 @@ async function handleDelete(req, res) {
 }
 
 
-module.exports = router;
+module.exports = authv2;
