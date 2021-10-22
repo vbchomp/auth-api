@@ -12,4 +12,4 @@ Heather Bisgaard
 ## Deployed Site
 
 [auth-api](https://hbis-auth-api-prod.herokuapp.com/)
-[github pull requests](https://github.com/vbchomp/auth-api/pull/2)
+[github pull requests](https://github.com/vbchomp/auth-api/pull/4)
